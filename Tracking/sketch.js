@@ -28,6 +28,7 @@ function preload() {
 
 function setup() {
   const canvas = createCanvas(windowWidth, windowHeight);
+  speed=width/2;
   Invader.resize(int(width/40),int(width/40));
   //furthestLeft=int(width/20-width/40);
   //furthestRight=int(19*width/20+width/40);
@@ -325,24 +326,37 @@ function enemy(x,y)
   
   this.updateEnem = function()
   {
-    if(furthestLeft<=1)
+    if(furthestLeft<=10)
       {
         incXflag=1;
         this.posY+=height/16;
       }
-    if(furthestRight>=width-1)
+    if(furthestRight>=width-10)
       {
         incXflag=0;
         this.posY+=height/16;
       }
-    
-    if(incXflag==1)
+    if(enemiesAlive==1)
       {
-        this.posX+=speed/(enemiesAlive+10);
+        if(incXflag==1)
+          {
+            this.posX+=2*speed/(enemiesAlive+10);
+          }
+        else
+          {
+            this.posX-=2*speed/(enemiesAlive+10);
+          }
       }
     else
       {
-        this.posX-=speed/(enemiesAlive+10);
+        if(incXflag==1)
+          {
+            this.posX+=speed/(enemiesAlive+10);
+          }
+        else
+          {
+            this.posX-=speed/(enemiesAlive+10);
+          }
       }
   }
   
