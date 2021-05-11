@@ -1,4 +1,4 @@
-In this file, I will expalin some of the key bits of code so that you may understand why some things are set up the way they are.
+In this file, I will explain some of the key bits of code so that you may understand why some things are set up the way they are.
 
 ![Code1](https://user-images.githubusercontent.com/43252460/117877736-e866d000-b272-11eb-82dd-c9976a62fa8c.PNG)
 
