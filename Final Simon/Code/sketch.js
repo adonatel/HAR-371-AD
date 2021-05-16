@@ -1,4 +1,3 @@
-
 p5.disableFriendlyErrors = true;
 
 let colors=[];
@@ -7,6 +6,7 @@ WL=2;//0 is game still going, 1 is loss, 2 is not started yet
 newLevel=0;
 correct=0;
 hiscore=0;
+hardscore=0;
 curscore=0;
 fsize='20px';
 avgsize=0;
@@ -16,11 +16,14 @@ timer2=0;
 timer3=0;
 curco=0;
 speed=400;
+mode=1;
 
 rn=0;
 bn=0;
 gn=0;
 yn=0;
+
+hellflag=0;
 
 startgame=0;
 
@@ -67,25 +70,25 @@ function setup() {
   ybutton.style('font-size', '30px');
   
   push();
-  losebutton = createButton('PLAY AGAIN?');
-  losebutton.position(windowWidth/2-windowWidth/16, windowHeight/2-windowHeight/16+50);
-  losebutton.size(windowWidth/8,windowHeight/8);
-  losebutton.style('font-size', fsize);
-  losebutton.style('background-color','black')
-  losebutton.style('color', 'white');
-  losebutton.mousePressed(restart);
-  losebutton.hide();
-  pop();
-  
-  push();
-  startbutton = createButton('START');
-  startbutton.position(windowWidth/2-windowWidth/16, windowHeight/2-windowHeight/16+50);
+  startbutton = createButton('NORMAL MODE');
+  startbutton.position(windowWidth/2-windowWidth/16-windowWidth/8, windowHeight/2-windowHeight/16+50);
   startbutton.size(windowWidth/8,windowHeight/8);
   startbutton.style('font-size', fsize);
   startbutton.style('background-color','black')
   startbutton.style('color', 'white');
   startbutton.mousePressed(start);
   pop();
+  
+  push();
+  hardbutton = createButton('HARD MODE');
+  hardbutton.position(windowWidth/2-windowWidth/16+windowWidth/8, windowHeight/2-windowHeight/16+50);
+  hardbutton.size(windowWidth/8,windowHeight/8);
+  hardbutton.style('font-size', fsize);
+  hardbutton.style('background-color','black')
+  hardbutton.style('color', 'white');
+  hardbutton.mousePressed(hard);
+  pop();
+  
   
   
   oscr = new p5.Oscillator('sine');
@@ -129,11 +132,19 @@ function draw() {
   avgsize=(windowWidth+windowHeight)/2/70;
   fsize=avgsize+'px';
   textSize(avgsize*1.3);
-  losebutton.style('font-size', fsize);
+  //losebutton.style('font-size', fsize);
   startbutton.style('font-size', fsize);
+  hardbutton.style('font-size', fsize);
   
   text('CURRENT SCORE : '+curscore,0,50+(avgsize*1.3)/2);
-  text('HIGHSCORE : '+hiscore,windowWidth/2,50+(avgsize*1.3)/2);
+  if(mode==1)
+    {
+      text('HIGHSCORE : '+hiscore,windowWidth/2,50+(avgsize*1.3)/2);
+    }
+  else
+    {
+      text('HIGHSCORE : '+hardscore,windowWidth/2,50+(avgsize*1.3)/2);
+    }
   
   if(millis()-timer3>=200)
     {
@@ -148,7 +159,41 @@ function draw() {
       
       if(millis()-timer<=300)
         {
-          
+          if(hellflag==0&&millis()-timer>=150)
+             {
+               if(mode==2&&colors.length!=1)
+                {
+                  if(curscore%4==0)
+                    {
+                      rbutton.position(rx,ry);
+                      bbutton.position(bx,by);
+                      gbutton.position(gx,gy);
+                      ybutton.position(yx,yy);
+                    }
+                  else if(curscore%4==1)
+                    {
+                      rbutton.position(bx,by);
+                      bbutton.position(yx,yy);
+                      gbutton.position(rx,ry);
+                      ybutton.position(gx,gy);
+                    }
+                  else if(curscore%4==2)
+                    {
+                      rbutton.position(yx,yy);
+                      bbutton.position(gx,gy);
+                      gbutton.position(bx,by);
+                      ybutton.position(rx,ry);
+                    }
+                  else if(curscore%4==3)
+                    {
+                      rbutton.position(gx,gy);
+                      bbutton.position(rx,ry);
+                      gbutton.position(yx,yy);
+                      ybutton.position(bx,by);
+                    }
+                }
+               hellflag=1;
+             }
         }
       else if(millis()-timer<=speed+300)
         {
@@ -176,6 +221,7 @@ function draw() {
         {
           curco=0;
           blinking=1;
+          hellflag=0;
         }
     }
   else
@@ -189,10 +235,10 @@ function draw() {
               blinking=0;
             }
         }
-      else
+      else if(WL==1)
         {
-          //losebutton.html('PLAY AGAIN?');
-          losebutton.show();
+          startbutton.show();
+          hardbutton.show();
           if(millis()-timer2>=3000)
             {
               oscloss.stop();
@@ -222,9 +268,19 @@ function scolor(length)
             reset();
             oscloss.start();
             timer2=millis();
-            if(curscore>hiscore)
+            if(mode==1)
               {
-                hiscore=curscore;
+                if(curscore>hiscore)
+                  {
+                    hiscore=curscore;
+                  }
+              }
+            else if (mode==2)
+              {
+                if(curscore>hardscore)
+                  {
+                    hardscore=curscore;
+                  }
               }
           }
 
@@ -298,7 +354,7 @@ function y()
 }
 function restart()
 {
-  losebutton.hide();
+  //losebutton.hide();
   level=1;
   WL=0;//0 is game still going, 1 is loss
   newLevel=0;
@@ -311,6 +367,7 @@ function restart()
   timer=millis();
   curco=0;
   speed=400;
+  hellflag=0;
 
   rn=0;
   bn=0;
@@ -318,12 +375,35 @@ function restart()
   yn=0;
   
   oscloss.stop();
+  
+  rx=windowWidth/4-windowWidth/4;
+  ry=windowHeight/4-windowHeight/2/2+100;
+  bx=windowWidth*3/4-windowWidth/2/2;
+  by=windowHeight/4-windowHeight/2/2+100;
+  gx=windowWidth/4-windowWidth/2/2;
+  gy=windowHeight*3/4-windowHeight/2/2+50;
+  yx=windowWidth*3/4-windowWidth/2/2;
+  yy=windowHeight*3/4-windowHeight/2/2+50;
+  
+  rbutton.position(rx,ry);
+  bbutton.position(bx,by);
+  gbutton.position(gx,gy);
+  ybutton.position(yx,yy);
 }
 
 function start()
 {
   restart();
+  mode=1;
   startbutton.hide();
+  hardbutton.hide();
+}
+function hard()
+{
+  restart();
+  mode=2;
+  startbutton.hide();
+  hardbutton.hide();
 }
 
 function blink(col)
@@ -387,7 +467,6 @@ function blink(col)
 
 function windowResized() {
   resizeCanvas(windowWidth, windowHeight);
-  
   rx=windowWidth/4-windowWidth/4;
   ry=windowHeight/4-windowHeight/2/2+100;
   bx=windowWidth*3/4-windowWidth/2/2;
@@ -396,24 +475,56 @@ function windowResized() {
   gy=windowHeight*3/4-windowHeight/2/2+50;
   yx=windowWidth*3/4-windowWidth/2/2;
   yy=windowHeight*3/4-windowHeight/2/2+50;
-  
-  rbutton.position(rx,ry);
-  bbutton.position(bx,by);
-  gbutton.position(gx,gy);
-  ybutton.position(yx,yy);
+  if(mode==1)
+    {
+      rbutton.position(rx,ry);
+      bbutton.position(bx,by);
+      gbutton.position(gx,gy);
+      ybutton.position(yx,yy);
+    }
+  else
+    {
+      if(curscore%4==0)
+        {
+          rbutton.position(rx,ry);
+          bbutton.position(bx,by);
+          gbutton.position(gx,gy);
+          ybutton.position(yx,yy);
+        }
+      else if(curscore%4==1)
+        {
+          rbutton.position(bx,by);
+          bbutton.position(yx,yy);
+          gbutton.position(rx,ry);
+          ybutton.position(gx,gy);
+        }
+      else if(curscore%4==2)
+        {
+          rbutton.position(yx,yy);
+          bbutton.position(gx,gy);
+          gbutton.position(bx,by);
+          ybutton.position(rx,ry);
+        }
+      else if(curscore%4==3)
+        {
+          rbutton.position(gx,gy);
+          bbutton.position(rx,ry);
+          gbutton.position(yx,yy);
+          ybutton.position(bx,by);
+        }
+    }
   
   rbutton.size(windowWidth/2,windowHeight/2-50);
   bbutton.size(windowWidth/2,windowHeight/2-50);
   gbutton.size(windowWidth/2,windowHeight/2-50);
   ybutton.size(windowWidth/2,windowHeight/2-50);
   
-  losebutton.position(windowWidth/2-windowWidth/16, windowHeight/2-windowHeight/16+50);
-  losebutton.size(windowWidth/8,windowHeight/8);
-  
-  startbutton.position(windowWidth/2-windowWidth/16, windowHeight/2-windowHeight/16+50);
+  startbutton.position(windowWidth/2-windowWidth/16-windowWidth/8, windowHeight/2-windowHeight/16+50);
   startbutton.size(windowWidth/8,windowHeight/8);
+  
+  hardbutton.position(windowWidth/2-windowWidth/16+windowWidth/8, windowHeight/2-windowHeight/16+50);
+  hardbutton.size(windowWidth/8,windowHeight/8);
   
   avgsize=(windowWidth+windowHeight)/2/70;
   fsize=avgsize+'px';
-  losebutton.style('font-size', fsize);
 }
