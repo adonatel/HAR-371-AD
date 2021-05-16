@@ -18,8 +18,9 @@ link: https://editor.p5js.org/adonatel/full/kHZIuokVGX
 
 A Couple of Pictures:
 
-![Start Screen](https://user-images.githubusercontent.com/43252460/117876443-64601880-b271-11eb-84da-c847baf3d140.PNG)
+![Capture](https://user-images.githubusercontent.com/43252460/118411214-68b97680-b661-11eb-8879-daed50745d3d.PNG)
 
-![Restart Screen](https://user-images.githubusercontent.com/43252460/117876452-66c27280-b271-11eb-8755-8edb46bca172.PNG)
+![Capture2](https://user-images.githubusercontent.com/43252460/118411278-b3d38980-b661-11eb-8ea6-9d9186f1606e.PNG)
+
 
 
